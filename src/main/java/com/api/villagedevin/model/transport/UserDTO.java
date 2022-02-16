@@ -1,7 +1,9 @@
 package com.api.villagedevin.model.transport;
 
 import java.util.Objects;
+import java.util.Set;
 
+import com.api.villagedevin.model.persistence.Role;
 import com.api.villagedevin.model.persistence.User;
 
 public class UserDTO {
@@ -10,7 +12,7 @@ public class UserDTO {
 
 	private String password;
 
-	private String[] roles;
+	private Set<Role> roles;
 
 	public UserDTO() {
 	}
@@ -41,11 +43,11 @@ public class UserDTO {
 		this.password = password;
 	}
 
-	public String[] getRoles() {
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(String[] roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 

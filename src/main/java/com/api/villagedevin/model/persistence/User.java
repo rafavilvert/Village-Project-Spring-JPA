@@ -1,15 +1,21 @@
 package com.api.villagedevin.model.persistence;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
-import com.api.villagedevin.model.transport.UserDTO;
 
 @Entity
 @Table(name = "`user`")
@@ -25,18 +31,20 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
-	@Column(nullable = false)
-	private String[] roles;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@ElementCollection
+	private Set<Role> roles = new HashSet<>();
 
 	public User() {
-		
+
 	}
 
 	public User(String email) {
 		this.email = email;
 	}
 
-	public User(String email, String password, String[] roles) {
+	public User(String email, String password, Set<Role> roles) {
 		this(email, password);
 		this.roles = roles;
 	}
@@ -50,12 +58,6 @@ public class User {
 		this.email = user.getEmail();
 		this.password = user.getPassword();
 		this.roles = user.getRoles();
-	}
-
-	public User(UserDTO userdto) {
-		this.email = userdto.getEmail();
-		this.password = userdto.getPassword();
-		this.roles = userdto.getRoles();
 	}
 
 	public String getEmail() {
@@ -74,11 +76,11 @@ public class User {
 		this.password = password;
 	}
 
-	public String[] getRoles() {
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(String[] roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 
