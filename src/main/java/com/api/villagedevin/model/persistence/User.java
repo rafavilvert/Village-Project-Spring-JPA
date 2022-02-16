@@ -29,7 +29,7 @@ public class User {
 	private String[] roles;
 
 	public User() {
-		
+
 	}
 
 	public User(String email) {
