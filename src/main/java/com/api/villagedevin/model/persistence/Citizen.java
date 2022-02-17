@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.api.villagedevin.model.transport.CitizenDTO;
@@ -36,6 +37,11 @@ public class Citizen {
 
 	@Column(name = "datanascimento", nullable = false)
 	private LocalDate dataNascimento;
+	
+	@OneToOne(mappedBy = "citizen")
+//	@OneToOne()
+//	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private User user;
 
 	public Citizen() {
 	}

@@ -1,12 +1,17 @@
 package com.api.villagedevin.model.persistence;
 
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.api.villagedevin.model.transport.UserDTO;
@@ -25,8 +30,13 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
-	@Column(nullable = false)
-	private String[] roles;
+	@ElementCollection(fetch = FetchType.EAGER)
+	private Set<String> roles;
+
+//	@OneToOne(mappedBy = "user")
+	@OneToOne()
+	@JoinColumn(name = "citizen_id", referencedColumnName = "id")
+	private Citizen citizen;
 
 	public User() {
 
@@ -36,7 +46,7 @@ public class User {
 		this.email = email;
 	}
 
-	public User(String email, String password, String[] roles) {
+	public User(String email, String password, Set<String> roles) {
 		this(email, password);
 		this.roles = roles;
 	}
@@ -58,6 +68,10 @@ public class User {
 		this.roles = userdto.getRoles();
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -74,11 +88,11 @@ public class User {
 		this.password = password;
 	}
 
-	public String[] getRoles() {
+	public Set<String> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(String[] roles) {
+	public void setRoles(Set<String> roles) {
 		this.roles = roles;
 	}
 
