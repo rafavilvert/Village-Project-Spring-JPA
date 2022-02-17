@@ -33,7 +33,6 @@ public class User {
 	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<String> roles;
 
-//	@OneToOne(mappedBy = "user")
 	@OneToOne()
 	@JoinColumn(name = "citizen_id", referencedColumnName = "id")
 	private Citizen citizen;

@@ -5,19 +5,26 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.api.villagedevin.model.persistence.User;
+import com.api.villagedevin.model.persistence.UserSpringSecurity;
 import com.api.villagedevin.model.repository.UserRepository;
 import com.api.villagedevin.model.transport.UserDTO;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	private final UserRepository userRepository;
+	private PasswordEncoder passwordEncoder;
 
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public List<UserDTO> listAll() {
@@ -38,9 +45,28 @@ public class UserService {
 	}
 
 	public ResponseEntity<HttpStatus> create(User user) {
-		this.userRepository.save(user);
 		
+		String encode = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encode);
+		
+		this.userRepository.save(user);
+
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		try {
+			User user = getUser(username);
+			return new UserSpringSecurity(user.getEmail(), user.getPassword(), user.getRoles());
+		} catch (UsernameNotFoundException e) {
+
+			throw new UsernameNotFoundException(username);
+		}
+	}
+
+	public User getUser(String email) {
+		return userRepository.findUserByEmail(email);
 	}
 
 }
