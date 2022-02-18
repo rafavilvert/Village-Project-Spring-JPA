@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,6 +54,15 @@ public class UserService implements UserDetailsService {
 		this.userRepository.save(user);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+	
+	public static UserSpringSecurity authenticated() {
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			return new UserSpringSecurity((String) authentication.getPrincipal(), null, new ArrayList<>());
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
